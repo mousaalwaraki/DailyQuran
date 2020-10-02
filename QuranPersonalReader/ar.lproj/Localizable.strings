@@ -1,0 +1,70 @@
+ /* 
+  Localizable.strings
+  QuranPersonalReader
+
+  Created by Mousa Alwaraki on 8/12/20.
+  Copyright © 2020 Mousa Alwaraki. All rights reserved.
+*/
+
+// FirstLaunchViewController
+"Start from page" = "بدأ من الصفحة" ;
+"Pages per day" = "عدد الصفحات في اليوم" ;
+"Change Daily Pages" = "تغيير الصفحات اليومية" ;
+"How many pages would you like to read daily?" = "كم عدد الصفحات التي تريد قراءتها يوميا؟" ;
+"Starting Page" = "بدءا من الصفحة" ;
+"Which page would you like to start your reading at?" = "في أي صفحة تريد أن تبدأ القراءة؟" ;
+"Cancel" = "إلغاء" ;
+"Confirm" = "تأكيد" ;
+
+// ImagesViewContoller
+"Done" = "انتهى";
+"Keep Reading" = "تابع القراءة" ;
+
+// DoneReadingViewController
+"Well Done, you completed todays reading! You can keep going but I'd encourage you to build a sustainable habit and not burn yourself out. " = "أحسنت ، لقد أكملت قراءة اليوم! يمكنك الاستمرار ولكني أشجعك على بناء عادة مستدامة وعدم حرق نفسك. " ;
+
+// CompletedQuranViewController
+"Well Done, you completed the Quran! You can restart and continue the awesome work you've been doing immediately or take a few minutes to do a duaa for finishing the Quran. If you do duaa please don't forget to include me in it!" = "أحسنت ، أكملت القرآن! يمكنك إعادة التشغيل ومتابعة العمل الرائع الذي كنت تقوم به على الفور أو أخذ بضع دقائق للقيام بدعاء لإنهاء القرآن. إذا كنت تفعل الدعاء من فضلك لا تنسى أن تضمني فيه!" ;
+
+// SpecialSoarViewController
+"Yasin" = "ياسين" ;
+"Mulk" = "الملك" ;
+"Kahf" = "الكهف" ;
+"Waqiah" = "الواقعة" ;
+"Last Page" = "آخر صفحة" ;
+
+// SettingsViewController
+"Build a habit of reading to get a streak going!" = "ابدأ القراءة للحصول على سلسلة قراءة ايام متتاليه!";
+"Your Max Streak is" = "اكبر السلسلة للقراءة في ايام متتاليه الخاصة بك هي" ;
+" get a streak going!" = " ابدأ سلسلة قراءة في ايام متتاليه!" ;
+"Current Streak:" = "سلسلة قراءة ايام متتاليه الحالية:" ;
+"Max Streak:" = "ااكبر سلسلة قراءة ايام متتاليه:" ;
+" Try to beat it!" = "حاول التغلب عليه !" ;
+" This is your Max Streak, keep it up!" = "هذه هي ااكبر سلسلة للقراءة المتتاليه الخاصة بك ، استمر في ذلك!" ;
+"Reset" = "إعادة التطبيق";
+"Are you sure you want to reset app?" = "هل أنت متأكد أنك تريد إعادة تعيين التطبيق؟" ;
+"Contact Me" = "اتصل بي" ;
+"I love hearing from you! If you give me a shout on any of the platforms below I'll be quick to answer." = "أحب الاستماع منك! إذا قمت بإرسال رسالة إلي باستخدام أي من الطرق ، فسأكون سريعًا في الرد." ;
+"Twitter" = "تويتر" ;
+"iMessage" = "(iMessage) رسالة" ;
+"Email" = "البريد الإلكتروني" ;
+"Notifications" = "تنبيه" ;
+"Your Privacy" = "خصوصيتك" ;
+"Our Mission" = "مهمتنا" ;
+"Get in Touch" = "تواصل معي" ;
+"Share Daily Quran" = "انشر Daily Quran" ;
+"Reset App" = "إعادة تعيين التطبيق" ;
+"Special Chapters" = "الصور المميزه" ;
+"Configuration" = "إعدادات التكوين" ;
+"Spread the love" = "أنشر الحب" ;
+"More" = "المزيد" ;
+
+
+// All
+"Settings" = "الإعدادات" ;
+"Today" = "اليوم" ;
+
+// Notifications
+"What time would you like to be reminded to read?" = "في أي وقت تريد أن يتم تذكيرك بالقراءة؟" ;
+"Change Time" = "تغيير الوقت" ;
+

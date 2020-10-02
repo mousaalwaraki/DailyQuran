@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import LanguageManager_iOS
 
 class NotificationsViewController: UIViewController {
     
@@ -65,6 +66,10 @@ class NotificationsViewController: UIViewController {
         viewForBackground.alpha = 0
         
         timeLabel.text = "\(Utilities.userHour):\(String(format: "%02d", Utilities.userMinute))"
+        
+        if LanguageManager.shared.currentLanguage == .ar {
+            timePicker.locale = .init(identifier: "ar")
+        }
     }
     
     

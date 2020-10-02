@@ -1,0 +1,6 @@
+framework module Pods_QuranPersonalReader {
+  umbrella header "Pods-QuranPersonalReader-umbrella.h"
+
+  export *
+  module * { export * }
+}

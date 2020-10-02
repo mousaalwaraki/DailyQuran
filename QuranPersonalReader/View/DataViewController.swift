@@ -8,93 +8,74 @@
 
 import UIKit
 
-var fullScreen = false
-
-protocol DataViewControllerDelegate {
-    func setBGColor(to color: UIColor)
-}
-
 class DataViewController: UIViewController {
 
+    @IBOutlet var bgView: UIView!
     @IBOutlet weak var quranImage: UIImageView!
-    var delegate: DataViewControllerDelegate?
     
+    var fullScreen = false
     var index: Int?
     var quranPage: Int = 0
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.quranImage.image = UIImage(named: "\(self.quranPage)")
         if fullScreen {
-            zoomIn()
+            hideNavAndTab()
         } else {
-            zoomOut()
+            showNavAndTab()
+        }
+        if self.traitCollection.userInterfaceStyle == .dark && quranPage != 1 && quranPage != 2 {
+            quranImage.backgroundColor = .black
+            if UIDevice.current.userInterfaceIdiom == .phone {
+                quranImage.alpha = 0.85
+            }
+            let darkQuranImage = quranImage.image?.invertedImage()
+            quranImage.image = darkQuranImage
+        } else {
+            quranImage.backgroundColor = .white
+            quranImage.alpha = 1
+            quranImage.image = quranImage.image
         }
     }
     override func viewDidAppear(_ animated: Bool) {
         if fullScreen {
-            zoomIn()
+            hideNavAndTab()
         } else {
-            zoomOut()
+            showNavAndTab()
         }
     }
     
+    override func viewDidLoad() {
+        UserDefaults.standard.set(quranPage, forKey: "currentPage")
+    }
+        
     @IBAction func tap(_ sender: Any) {
         fullScreen = !fullScreen
         if fullScreen {
-            zoomIn()
-            delegate?.setBGColor(to: UIColor(red: 0.89, green: 0.98, blue: 1.00, alpha: 1.00))
+            hideNavAndTab()
         } else {
-            zoomOut()
-            delegate?.setBGColor(to: .white)
+            showNavAndTab()
         }
         setNeedsStatusBarAppearanceUpdate()
     }
     
-    func zoomIn() {
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            self.view.backgroundColor = .white
-        } else {
-            view.backgroundColor = UIColor(red: 0.89, green: 0.98, blue: 1.00, alpha: 1.00)
-        }
+    func hideNavAndTab() {
         UIView.animate(withDuration: 0.3) {
             self.navigationController?.setNavigationBarHidden(true, animated: true)
             self.tabBarController?.tabBar.alpha = 0
-            self.quranImage.image = UIImage(named: "\(self.quranPage)")
             self.setNeedsStatusBarAppearanceUpdate()
-            
         }
-        
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            //don't zoom in if on ipad
-            return
-        }
-        
-        if self.quranPage == 1 || self.quranPage == 2 {
-            let size = CGSize(width: 650, height: 1200)
-            let newImage = self.quranImage.image?.crop(to: size)
-            self.quranImage.image = newImage
-            self.view.layoutIfNeeded()
-            self.view.reloadInputViews()
-            return
-        }
-            let size = CGSize(width: 585, height: 945)
-            let newImage = self.quranImage.image?.crop(to: size)
-            self.quranImage.image = newImage
-            self.view.layoutIfNeeded()
-            self.view.reloadInputViews()
-        
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "FullScreen"), object: nil)
     }
     
-    func zoomOut() {
-        view.backgroundColor = .white
+    func showNavAndTab() {
         UIView.animate(withDuration: 0.3) {
             self.navigationController?.setNavigationBarHidden(false, animated: true)
             self.tabBarController?.tabBar.alpha = 1
-            self.quranImage.image = UIImage(named: "\(self.quranPage)")
             self.setNeedsStatusBarAppearanceUpdate()
         }
-        self.view.layoutIfNeeded()
-        self.view.reloadInputViews()
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "Non-FullScreen"), object: nil)
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -106,58 +87,3 @@ class DataViewController: UIViewController {
     }
 }
 
-extension UIImage {
-
-func crop(to:CGSize) -> UIImage {
-
-    guard let cgimage = self.cgImage else { return self }
-
-    let contextImage: UIImage = UIImage(cgImage: cgimage)
-
-    guard let newCgImage = contextImage.cgImage else { return self }
-
-    let contextSize: CGSize = contextImage.size
-
-    //Set to square
-    var posX: CGFloat = 0.0
-    var posY: CGFloat = 0.0
-    let cropAspect: CGFloat = to.width / to.height
-
-    var cropWidth: CGFloat = to.width
-    var cropHeight: CGFloat = to.height
-
-    if to.width > to.height { //Landscape
-        cropWidth = contextSize.width
-        cropHeight = contextSize.width / cropAspect
-        posY = (contextSize.height - cropHeight) / 2
-    } else if to.width < to.height { //Portrait
-        posX = (contextSize.width - cropWidth) / 2
-        posY = (contextSize.height - cropHeight) / 2 + 5
-    } else { //Square
-        if contextSize.width >= contextSize.height { //Square on landscape (or square)
-            cropHeight = contextSize.height
-            cropWidth = contextSize.height * cropAspect
-            posX = (contextSize.width - cropWidth) / 2
-        }else{ //Square on portrait
-            cropWidth = contextSize.width
-            cropHeight = contextSize.width / cropAspect
-            posY = (contextSize.height - cropHeight) / 2
-        }
-    }
-
-    let rect: CGRect = CGRect(x: posX, y: posY, width: cropWidth, height: cropHeight)
-
-    // Create bitmap image from context using the rect
-    guard let imageRef: CGImage = newCgImage.cropping(to: rect) else { return self}
-
-    // Create a new image based on the imageRef and rotate back to the original orientation
-    let cropped: UIImage = UIImage(cgImage: imageRef, scale: self.scale, orientation: self.imageOrientation)
-
-    UIGraphicsBeginImageContextWithOptions(to, false, self.scale)
-    cropped.draw(in: CGRect(x: 0, y: 0, width: to.width, height: to.height))
-    let resized = UIGraphicsGetImageFromCurrentImageContext()
-    UIGraphicsEndImageContext()
-
-    return resized ?? self
-  }
-}

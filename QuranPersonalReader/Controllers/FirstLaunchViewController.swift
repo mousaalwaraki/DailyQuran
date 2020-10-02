@@ -7,14 +7,50 @@
 //
 
 import UIKit
+import LanguageManager_iOS
 
 class FirstLaunchViewController: UIViewController {
 
+    @IBOutlet weak var bismillahImage: UIImageView!
     @IBOutlet weak var pagesNumberChoiceButton: UIButton!
     @IBOutlet weak var numberChoiceStepper: UIStepper!
     @IBOutlet weak var doneButton: UIButton!
     @IBOutlet weak var pageStartButton: UIButton!
     @IBOutlet weak var pageStartStepper: UIStepper!
+    
+    var changeDailyPagesAlertTitle = "Change Daily Pages"
+    var changeDailyPagesAlertMessage = "How many pages would you like to read daily?"
+    var pageStartAlertTitle = "Starting Page"
+    var pageStartAlertMessage = "Which page would you like to start your reading at?"
+    
+    var alertCancel = "Cancel"
+    var alertConfirm = "Confirm"
+    
+    
+    @IBAction func engTapped(_ sender: Any) {
+       LanguageManager.shared.setLanguage(language: .en, viewControllerFactory: { title -> UIViewController in
+          let storyboard = UIStoryboard(name: "Main", bundle: nil)
+          // instantiate the view controller that you want to show after changing the language.
+          return storyboard.instantiateViewController(identifier: "FirstLaunchViewController")
+        }) { view in
+          // do custom animation
+//          view.transform = CGAffineTransform(scaleX: 2, y: 2)
+//          view.alpha = 0
+        }
+    }
+    
+    
+    @IBAction func arTapped(_ sender: Any) {
+        LanguageManager.shared.setLanguage(language: .ar, viewControllerFactory: { title -> UIViewController in
+          let storyboard = UIStoryboard(name: "Main", bundle: nil)
+          // instantiate the view controller that you want to show after changing the language.
+          return storyboard.instantiateViewController(identifier: "FirstLaunchViewController")
+        }) { view in
+          // do custom animation
+//          view.transform = CGAffineTransform(scaleX: 2, y: 2)
+//          view.alpha = 0
+        }
+    }
     
     var numberOfPagesTextField:UITextField = UITextField(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
     var startingPageTextField:UITextField = UITextField(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
@@ -32,6 +68,10 @@ class FirstLaunchViewController: UIViewController {
         
         numberChoiceStepper.value = 1
         pageStartStepper.value = 1
+        
+        if self.traitCollection.userInterfaceStyle == .light {
+            bismillahImage.image = bismillahImage.image?.invertedImage()
+        }
     }
     
     func configurationTextField(textField: UITextField!) {
@@ -58,9 +98,9 @@ class FirstLaunchViewController: UIViewController {
     }
     
     @IBAction func pagesNumberChoiceButtonClicked(_ sender: Any) {
-        let alert = UIAlertController(title: "Change Daily Pages", message: "How many pages would you like to read daily?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Confirm", style: .default, handler:{ (UIAlertAction)in
+        let alert = UIAlertController(title: changeDailyPagesAlertTitle.localiz(), message: changeDailyPagesAlertMessage.localiz(), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: alertCancel.localiz(), style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: alertConfirm.localiz(), style: .default, handler:{ (UIAlertAction)in
             self.dailyNumberPages = Int(self.numberOfPagesTextField.text!)!
             self.pagesNumberChoiceButton.setTitle("\(self.dailyNumberPages)", for: .normal)
             self.numberChoiceStepper.value = Double(self.dailyNumberPages)
@@ -104,9 +144,9 @@ class FirstLaunchViewController: UIViewController {
     }
     
     @IBAction func pagesStartButtonTapped(_ sender: Any) {
-        let alert = UIAlertController(title: "Starting Page", message: "Which page would you like to start your reading at?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Confirm", style: .default, handler:{ (UIAlertAction)in
+        let alert = UIAlertController(title: pageStartAlertTitle.localiz(), message: pageStartAlertMessage.localiz(), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: alertCancel.localiz(), style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: alertConfirm.localiz(), style: .default, handler:{ (UIAlertAction)in
             self.startingPage = Int(self.startingPageTextField.text!)!
             self.pageStartButton.setTitle("\(self.startingPage)", for: .normal)
             self.pageStartStepper.value = Double(self.startingPage)

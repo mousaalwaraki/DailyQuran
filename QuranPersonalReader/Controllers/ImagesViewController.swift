@@ -9,14 +9,20 @@
 import UIKit
 import AVFoundation
 
-class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewControllerDelegate {
+class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
     
+    @IBOutlet weak var bottomContentSafeAreaConstraint: NSLayoutConstraint!
+    @IBOutlet var bottomContentSuperViewConstraint: NSLayoutConstraint!
+    @IBOutlet weak var centreConstraint: NSLayoutConstraint!
+    @IBOutlet var bgView: UIView!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var doneButton: UIButton!
     @IBOutlet weak var titleBar: UINavigationItem!
     @IBOutlet weak var superTop: NSLayoutConstraint!
     @IBOutlet weak var safeTop: NSLayoutConstraint!
+    @IBOutlet weak var pageNumberLabel: UILabel!
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
     var dailyPages = UserDefaults.standard.integer(forKey: "dailyPages")
     var dailyPagesArray:[Int] = []
@@ -36,6 +42,24 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewCon
     var pagesToRead:[Int] = []
     var currentlyFinishedAudioNumberOfPages = 0
     var currentlyFinishedNumberOfPages:Int?
+    var deviceIsLandscape : Bool?
+    
+    override func viewDidLoad() {
+        LocalNotificationManager.shared.scheduleNotifications()
+        deviceIsLandscape = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isLandscape ?? false
+        NotificationCenter.default.addObserver(self, selector: #selector(setSuperConstraints(_:)), name: Notification.Name(rawValue: "FullScreen"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setSafeConstraints(_:)), name: Notification.Name(rawValue: "Non-FullScreen"), object: nil)
+    }
+    
+    @objc func setSuperConstraints(_ notification: Notification) {
+        bottomContentSafeAreaConstraint.isActive = false
+        bottomContentSuperViewConstraint.isActive = true
+    }
+    
+    @objc func setSafeConstraints(_ notification: Notification) {
+        bottomContentSafeAreaConstraint.isActive = true
+        bottomContentSuperViewConstraint.isActive = false
+    }
     
     override func viewDidAppear(_ animated: Bool) {
         
@@ -46,16 +70,32 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewCon
         dailyPages = UserDefaults.standard.integer(forKey: "dailyPages")
         setAudioPageArrayForiPad()
         currentlyFinishedNumberOfPages = ((UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isLandscape) ?? false) ? 2 : 1
+        self.title = String(pageNumber!)
+        pageNumberLabel.text = String(pageNumber!)
+        tabBarController?.tabBar.items![0].title = "Today"
+        contentView.backgroundColor = .white
+        if self.traitCollection.userInterfaceStyle == .dark {
+            bgView.backgroundColor = .black
+        } else {
+            bgView.backgroundColor = .white
         }
+    }
+    
+    override func viewDidLayoutSubviews() {
+        iPadFixConstraints()
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         produceArray()
-        iPadFixConstraints()
-        setBGColor(to: .white)
+        bottomConstraint.constant = self.tabBarController!.tabBar.frame.height/2
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            pageNumberLabel.removeFromSuperview()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         firstTime = true
+        player?.pause()
     }
     
     @IBAction func playPauseTapped(_ sender: Any) {
@@ -72,14 +112,14 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewCon
             URLSession.shared.dataTask(with: URL(string: "\(Url ?? "smth")")!) { (data, response, error) in
                 //DONE DOWNLOADING
                 guard let data = data, error == nil else {
-//                    print("Something went wrong")
+                    //                    print("Something went wrong")
                     self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
                     return
                 }
                 self.player = try! AVAudioPlayer(data: data, fileTypeHint: AVFileType.mp3.rawValue)
                 self.player?.prepareToPlay()
-//                self.player?.enableRate = true
-//                self.player?.rate = 50
+                //                self.player?.enableRate = true
+                //                self.player?.rate = 50
                 self.player?.play()
                 self.player!.delegate = self
                 DispatchQueue.main.sync {
@@ -98,21 +138,12 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewCon
     
     @IBAction func doneTapped(_ sender: Any) {
         
-        if pageNumber == 604 {
-            finishedFullQuran()
-        } else {
-            finishedTodayReading()
-        }
-
-        setStreaks()
-        
-        LocalNotificationManager.shared.requestPushNotificationsPermissions()
-        
-        deleteArrayItems()
-        getTodaysDate()
-        UserDefaults.standard.set(components, forKey: "todaysDate")
-        UserDefaults.standard.set("\(combinedCurrentDate)", forKey: "lastDate")
-        UserDefaults.standard.set("true", forKey: "readToday")
+        let alert = UIAlertController(title: "Done?", message: "Are you done reading your pages for today?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
+            self.doneReading()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alert, animated: true)
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -130,6 +161,24 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewCon
         }
     }
     
+    func doneReading() {
+        if pageNumber! >= 604 {
+            finishedFullQuran()
+        } else {
+            finishedTodayReading()
+        }
+        
+        setStreaks()
+        
+        LocalNotificationManager.shared.requestPushNotificationsPermissions()
+        
+        deleteArrayItems()
+        getTodaysDate()
+        UserDefaults.standard.set(components, forKey: "todaysDate")
+        UserDefaults.standard.set("\(combinedCurrentDate)", forKey: "lastDate")
+        UserDefaults.standard.set("true", forKey: "readToday")
+    }
+    
     func relaunchVC() {
         let vc = self.storyboard!.instantiateViewController(withIdentifier: "ImagesViewController")
         vc.modalPresentationStyle = .fullScreen
@@ -143,7 +192,7 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewCon
         if UserDefaults.standard.value(forKey: "lastDate") != nil && combinedYesterdayDate == String(UserDefaults.standard.value(forKey: "lastDate")! as! String) {
             UserDefaults.standard.set(UserDefaults.standard.value(forKey: "CurrentStreak") as! Int + 1, forKey: "CurrentStreak")
         } else if UserDefaults.standard.value(forKey: "lastDate") != nil && combinedCurrentDate == String(UserDefaults.standard.value(forKey: "lastDate")! as! String) {
-    
+            
         } else {
             UserDefaults.standard.set(1, forKey: "CurrentStreak")
         }
@@ -185,13 +234,6 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewCon
         if UIDevice.current.userInterfaceIdiom == .pad {
             safeTop.isActive = true
             superTop.isActive = false
-            view.backgroundColor = .white
-        }
-    }
-    
-    func setBGColor(to color: UIColor) {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            view.backgroundColor = color
         }
     }
     
@@ -201,9 +243,9 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewCon
             vc.modalPresentationStyle = .fullScreen
             self.present(vc, animated: true)
         } else {
-            let vc = storyboard?.instantiateViewController(identifier: "CompletedQuranViewController")
-            vc!.modalPresentationStyle = .fullScreen
-            self.present(vc!, animated: true)
+            let vc = storyboard!.instantiateViewController(identifier: "CompletedQuranViewController")
+            vc.modalPresentationStyle = .fullScreen
+            self.present(vc, animated: true)
         }
     }
     
@@ -290,7 +332,7 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewCon
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
         self.player = nil
-
+        
         if currentlyFinishedAudioNumberOfPages < pagesToRead.count - 1 {
             currentlyFinishedAudioNumberOfPages += 1
             playPauseTapped(self)
@@ -369,7 +411,6 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate, DataViewCon
         
         dataViewController.index = index
         dataViewController.quranPage = dailyPagesArray[index - 1]
-        dataViewController.delegate = self
         
         return dataViewController
     }
@@ -396,17 +437,15 @@ extension ImagesViewController: UIPageViewControllerDelegate, UIPageViewControll
         
         currentViewControllerIndex = currentIndex
         
-        let deviceIsLandscape = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isLandscape ?? false
-        
         if currentlyFinishedNumberOfPages != pagesToRead.count {
             currentlyFinishedNumberOfPages! += 1
         }
         
-        if currentIndex == 1 && deviceIsLandscape && self.dailyPages % 2 == 0 && currentlyFinishedNumberOfPages == pagesToRead.count  {
+        if (currentIndex == 1 && (deviceIsLandscape == true) && self.dailyPages % 2 == 0 && currentlyFinishedNumberOfPages == pagesToRead.count) || (!deviceIsLandscape! && currentIndex == 1)  {
             
             let alert = UIAlertController(title: "Done?", message: "Are you done reading your pages for today?", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
-                self.doneTapped(self)
+                self.doneReading()
             }))
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             present(alert, animated: true)
@@ -414,17 +453,16 @@ extension ImagesViewController: UIPageViewControllerDelegate, UIPageViewControll
         }
         
         pageNumber! += 1
-        currentIndex -= 1
+        if currentIndex != 0 { currentIndex -= 1 }
+        if currentViewControllerIndex == 1 { currentViewControllerIndex += 1 }
         
-        if currentIndex == 1 && deviceIsLandscape && currentlyFinishedNumberOfPages == pagesToRead.count {
-//            self.dailyPages % 2 != 0
+        if (currentIndex == 0) && (deviceIsLandscape == true) && currentlyFinishedNumberOfPages == pagesToRead.count {
             let nextViewController = detailViewControllerAt(index: currentViewControllerIndex - 1)
             let emptyViewController = EmptyViewController()
             pageViewController.setViewControllers([emptyViewController, nextViewController!], direction: .reverse, animated: true)
             UIView.animate(withDuration: 0.3) {
                 self.doneButton.alpha = 1
             }
-            self.currentlyFinishedNumberOfPages! -= 1
         }
         
         return detailViewControllerAt(index: currentIndex)
@@ -443,7 +481,7 @@ extension ImagesViewController: UIPageViewControllerDelegate, UIPageViewControll
         }
         
         pageNumber! -= 1
-        currentIndex += 1
+        if currentIndex == 0 && (deviceIsLandscape == true) { } else { currentIndex += 1 }
         currentlyFinishedNumberOfPages! -= 1
         
         currentViewControllerIndex = currentIndex
@@ -462,6 +500,10 @@ extension ImagesViewController: UIPageViewControllerDelegate, UIPageViewControll
         {
             return
         }
+        
+        pageNumberLabel.text = "\(UserDefaults.standard.value(forKey: "currentPage") ?? pageNumber!)"
+        self.title = "\(UserDefaults.standard.value(forKey: "currentPage") ?? pageNumber!)"
+        tabBarController?.tabBar.items![0].title = "Today"
         
         var index = ((pageViewController.viewControllers!.first as! DataViewController).index)!
         index = dailyPages - index

@@ -1,0 +1,65 @@
+ /* 
+  Localizable.strings
+  QuranPersonalReader
+
+  Created by Mousa Alwaraki on 8/12/20.
+  Copyright © 2020 Mousa Alwaraki. All rights reserved.
+*/
+
+// FirstLaunchViewController
+"Start from page" = "Start from page" ;
+"Pages per day" = "Pages per day" ;
+"Change Daily Pages" = "Change Daily Pages" ;
+"How many pages would you like to read daily?" = "How many pages would you like to read daily?" ;
+"Starting Page" = "Starting Page" ;
+"Which page would you like to start your reading at?" = "Which page would you like to start your reading at?" ;
+"Cancel" = "Cancel" ;
+"Confirm" = "Confirm" ;
+
+// ImagesViewContoller
+"Done" = "Done";
+"Keep Reading" = "Keep Reading" ;
+
+// DoneReadingViewController
+"Well Done, you completed todays reading! You can keep going but I'd encourage you to build a sustainable habit and not burn yourself out. " = "Well Done, you completed todays reading! You can keep going but I'd encourage you to build a sustainable habit and not burn yourself out. " ;
+
+// CompletedQuranViewController
+"Well Done, you completed the Quran! You can restart and continue the awesome work you've been doing immediately or take a few minutes to do a duaa for finishing the Quran. If you do duaa please don't forget to include me in it!" = "Well Done, you completed the Quran! You can restart and continue the awesome work you've been doing immediately or take a few minutes to do a duaa for finishing the Quran. If you do duaa please don't forget to include me in it!" ;
+
+// SpecialSoarViewController
+"Yasin" = "Yasin" ;
+"Mulk" = "Mulk" ;
+"Kahf" = "Kahf" ;
+"Waqiah" = "Waqiah" ;
+"Last Page" = "Last Page" ;
+
+// SettingsViewController
+"Build a habit of reading to get a streak going!" = "Build a habit of reading to get a streak going!";
+"Your Max Streak is \(maxStreak!) 🔥, get a streak going!" = "Your Max Streak is \(maxStreak!) 🔥, get a streak going!" ;
+"Current Streak: \(currentStreak!) 🔥 Max Streak: \(maxStreak!). Try to beat it!" = "Current Streak: \(currentStreak!) 🔥 Max Streak: \(maxStreak!). Try to beat it!" ;
+"Current Streak: \(currentStreak!) 🔥 This is your Max Streak, keep it up!" = "Current Streak: \(currentStreak!) 🔥 This is your Max Streak, keep it up!" ;
+"Are you sure you want to reset app?" = "Are you sure you want to reset app?" ;
+"Reset" = "Reset" ;
+"Contact Me" = "Contact Me" ;
+"I love hearing from you! If you give me a shout on any of the platforms below I'll be quick to answer." = "I love hearing from you! If you give me a shout on any of the platforms below I'll be quick to answer." ;
+"Twitter" = "Twitter" ;
+"iMessage" = "iMessage" ;
+"Email" = "Email" ;
+"Notifications" = "Notifications" ;
+"Your Privacy" = "Your Privacy" ;
+"Our Mission" = "Our Mission" ;
+"Get in Touch" = "Get in Touch" ;
+"Share Daily Quran" = "Share Daily Quran" ;
+"Reset App" = "Reset App" ;
+"Special Chapters" = "Special Chapters" ;
+"Configuration" = "Configuration" ;
+"Spread the love" = "Spread the love" ;
+"More" = "More" ;
+
+// All
+"Settings" = "Settings" ;
+"Today" = "Today" ;
+
+// Notifications
+"What time would you like to be reminded to read?" = "What time would you like to be reminded to read?" ;
+"Change Time" = "Change Time" ;

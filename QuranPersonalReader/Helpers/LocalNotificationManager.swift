@@ -13,6 +13,7 @@ class LocalNotificationManager: NSObject, UNUserNotificationCenterDelegate {
     static let shared = LocalNotificationManager()
     var trigger:UNCalendarNotificationTrigger?
     var combinedCurrentDate = ""
+    var readToday = false
     
     func requestPushNotificationsPermissions() {
         let center = UNUserNotificationCenter.current()
@@ -31,6 +32,13 @@ class LocalNotificationManager: NSObject, UNUserNotificationCenterDelegate {
         //remove existing notifications
         UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        
+        getCurrentDate()
+        if UserDefaults.standard.value(forKey: "lastDate") != nil && combinedCurrentDate == UserDefaults.standard.value(forKey: "lastDate") as? String {
+            readToday = true
+        } else {
+            readToday = false
+        }
         
         for day in 0...4 {
         schedule(localNotifcation: getRandomNotification(), days: TimeInterval(day))
@@ -66,9 +74,9 @@ class LocalNotificationManager: NSObject, UNUserNotificationCenterDelegate {
         let modifiedDay = Calendar.current.date(bySettingHour: Utilities.userHour, minute: Utilities.userMinute, second: 0, of: day)
         let components = Calendar.current.dateComponents([.day, .hour, .minute], from: modifiedDay!)
         getCurrentDate()
-//        if combinedCurrentDate == combinedCurrentDate {
-        if "\(UserDefaults.standard.value(forKey: "readToday") ?? 1)" == "true" {
-            
+        
+        if readToday == true {
+            readToday = false
         } else {
             
             self.trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)

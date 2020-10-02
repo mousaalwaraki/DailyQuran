@@ -57,14 +57,15 @@ class CompletedQuranViewController: UIViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "DuaaViewController")
         UserDefaults.standard.set(1000, forKey: "todaysDate")
-        UIApplication.shared.windows.first?.rootViewController =  vc
+        self.present(vc, animated: true)
+//        UIApplication.shared.windows.first?.rootViewController =  vc
     }
     @IBAction func resetButtonTapped(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "FirstLaunchViewController")
-        UserDefaults.standard.set(0, forKey: "dailyPages")
+        UserDefaults.standard.set(1, forKey: "dailyPages")
         UserDefaults.standard.set(0, forKey: "todaysDate")
-        UIApplication.shared.windows.first?.rootViewController =  vc
+        self.present(vc, animated: true)
     }
     
 }

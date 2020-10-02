@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -26,9 +26,8 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view alpha="0.25" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bDe-ZF-tm5">
+                <view alpha="0.25" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bDe-ZF-tm5">
                     <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <gestureRecognizers/>
                     <connections>
@@ -76,15 +75,19 @@
             <constraints>
                 <constraint firstItem="uhR-bn-jKX" firstAttribute="centerX" secondItem="r7q-i7-VbO" secondAttribute="centerX" id="7wz-dF-zRY"/>
                 <constraint firstItem="aU5-RD-Apl" firstAttribute="bottom" secondItem="0Ob-8e-qI3" secondAttribute="bottom" constant="15" id="DN5-QQ-U35"/>
+                <constraint firstAttribute="bottom" secondItem="bDe-ZF-tm5" secondAttribute="bottom" id="IM1-aR-IKv"/>
                 <constraint firstItem="KCH-Gz-YLm" firstAttribute="top" secondItem="TWG-c2-ExU" secondAttribute="bottom" constant="25" id="IcD-Tj-v5T"/>
                 <constraint firstItem="aU5-RD-Apl" firstAttribute="trailing" secondItem="0Ob-8e-qI3" secondAttribute="trailing" id="O30-oj-BzQ"/>
+                <constraint firstItem="bDe-ZF-tm5" firstAttribute="top" secondItem="r7q-i7-VbO" secondAttribute="top" id="TVi-HU-VLG"/>
                 <constraint firstItem="aU5-RD-Apl" firstAttribute="leading" secondItem="0Ob-8e-qI3" secondAttribute="leading" id="Wqq-ge-1Kq"/>
                 <constraint firstItem="uhR-bn-jKX" firstAttribute="top" secondItem="0Ob-8e-qI3" secondAttribute="top" constant="90" id="fAJ-vK-aRa"/>
+                <constraint firstItem="bDe-ZF-tm5" firstAttribute="trailing" secondItem="r7q-i7-VbO" secondAttribute="trailing" id="fbH-rO-7SI"/>
                 <constraint firstItem="uhR-bn-jKX" firstAttribute="leading" secondItem="0Ob-8e-qI3" secondAttribute="leading" constant="32" id="gOU-IG-ZBh"/>
                 <constraint firstItem="KCH-Gz-YLm" firstAttribute="centerX" secondItem="r7q-i7-VbO" secondAttribute="centerX" id="ioa-Xh-PMW"/>
                 <constraint firstItem="TWG-c2-ExU" firstAttribute="centerX" secondItem="r7q-i7-VbO" secondAttribute="centerX" id="jpY-Dr-I9d"/>
                 <constraint firstItem="TWG-c2-ExU" firstAttribute="top" secondItem="uhR-bn-jKX" secondAttribute="bottom" constant="50" id="mUf-Nu-TkT"/>
                 <constraint firstItem="aU5-RD-Apl" firstAttribute="top" relation="greaterThanOrEqual" secondItem="KCH-Gz-YLm" secondAttribute="bottom" constant="16" id="qno-EB-Otx"/>
+                <constraint firstItem="bDe-ZF-tm5" firstAttribute="leading" secondItem="r7q-i7-VbO" secondAttribute="leading" id="xu0-Tg-2Tr"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="0Ob-8e-qI3"/>
             <point key="canvasLocation" x="137.68115942028987" y="108.48214285714285"/>

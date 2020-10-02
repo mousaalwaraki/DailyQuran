@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 import MessageUI
+import LanguageManager_iOS
 
 class NewSettingsViewController:  UIViewController, UITableViewDataSource, UITableViewDelegate, MFMailComposeViewControllerDelegate {
     
@@ -30,19 +31,27 @@ class NewSettingsViewController:  UIViewController, UITableViewDataSource, UITab
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
-        sections.append(("Configuration", [.notifications, .changeDailyPages, .specialChapters]))
-        sections.append(("Spread the love", [.mission, .contact, .share]))
-        sections.append(("More", [.terms ,.restart]))
+        
+        sections.append(("Configuration".localiz(), [.notifications, .changeDailyPages, .specialChapters]))
+        sections.append(("Spread the love".localiz(), [.mission, .contact, .share]))
+        sections.append(("More".localiz(), [.terms ,.restart]))
         
         profileTableView.dataSource = self
         profileTableView.delegate = self
         profileTableView.reloadData()
         profileTableView.tableFooterView = UIView()
         backgroundView.backgroundColor = .secondarySystemBackground
+        
+        navigationController?.title = "Settings".localiz()
+        self.title = "Settings".localiz()
+        if LanguageManager.shared.currentLanguage == .ar {
+            headerLabel.font = headerLabel.font.withSize(15)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.backItem?.title = "Settings".localiz()
+        navigationController?.title = "Settings".localiz()
         checkForStreaks()
     }
     
@@ -56,13 +65,13 @@ class NewSettingsViewController:  UIViewController, UITableViewDataSource, UITab
         }
         
         if (maxStreak == nil) || (maxStreak as! Int == 0 && currentStreak as! Int == 0) {
-            headerLabel.text = "Build a habit of reading to get a streak going!"
+            headerLabel.text = "Build a habit of reading to get a streak going!".localiz()
         } else if (currentStreak == nil || currentStreak as! Int == 0) && maxStreak != nil {
-            headerLabel.text = "Your Max Streak is \(maxStreak!) 🔥, get a streak going!"
+            headerLabel.text = "Your Max Streak is".localiz() + " \(maxStreak!) 🔥," + " get a streak going!".localiz()
         } else if (currentStreak != nil) && ((currentStreak as! Int) < (maxStreak as! Int)) {
-             headerLabel.text = "Current Streak: \(currentStreak!) 🔥 Max Streak: \(maxStreak!). Try to beat it!"
+            headerLabel.text = "Current Streak:".localiz() + "\(currentStreak!) 🔥," + "Max Streak:".localiz() + " \(maxStreak!)." + " Try to beat it!".localiz()
         } else {
-            headerLabel.text = "Current Streak: \(currentStreak!) 🔥 This is your Max Streak, keep it up!"
+            headerLabel.text = "Current Streak:".localiz() + " \(currentStreak!) 🔥." + " This is your Max Streak, keep it up!".localiz()
         }
     }
     
@@ -158,12 +167,12 @@ class NewSettingsViewController:  UIViewController, UITableViewDataSource, UITab
     }
     
     func tappedRestart() {
-        let alert = UIAlertController(title: "Reset", message: "Are you sure you want to reset app?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Reset", style: .destructive, handler: { _ in
+        let alert = UIAlertController(title: "Reset".localiz(), message: "Are you sure you want to reset app?".localiz(), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel".localiz(), style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Reset".localiz(), style: .destructive, handler: { _ in
             let storyboard = UIStoryboard(name: "Main", bundle: nil)
             let vc = storyboard.instantiateViewController(withIdentifier: "FirstLaunchViewController")
-            UserDefaults.standard.set(0, forKey: "dailyPages")
+            UserDefaults.standard.set(1, forKey: "dailyPages")
             UserDefaults.standard.set(0, forKey: "todaysDate")
             UIApplication.shared.windows.first?.rootViewController =  vc
         }))
@@ -178,36 +187,19 @@ class NewSettingsViewController:  UIViewController, UITableViewDataSource, UITab
             self.my.keyboardType = .numberPad
         }
     }
-
+    
     
     func tappedChangeDailyPages() {
-        let alert = UIAlertController(title: "Change Daily Pages", message: "How many pages would you like to read daily?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Confirm", style: .default, handler:{ (UIAlertAction)in
+        let alert = UIAlertController(title: "Change Daily Pages".localiz(), message: "How many pages would you like to read daily?".localiz(), preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel".localiz(), style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Confirm".localiz(), style: .default, handler:{ (UIAlertAction)in
             let number = Int(self.my.text!)
             if number != 0 {
-            UserDefaults.standard.set(Int(self.my.text!), forKey: "dailyPages")
-            } else {
-//                print("error")
-            }
+                UserDefaults.standard.set(Int(self.my.text!), forKey: "dailyPages")
+            } else {}
         }))
         alert.addTextField(configurationHandler: configurationTextField(textField: ))
         present(alert, animated:true)
-    }
-    
-    func tappedSignOut() {
-        let alert = UIAlertController(title: "Sign Out", message: "Are you sure you want to sign out?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: { _ in
-            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-            let vc = storyboard.instantiateViewController(withIdentifier: "LoginNavigationController")
-            UIApplication.shared.windows.first?.rootViewController =  vc
-        }))
-        present(alert, animated: true)
-    }
-    
-    func tappedFeature() {
-//        HintPod.present(title: "Suggest A Feature")
     }
     
     func showPrivacyAndTerms() {
@@ -220,36 +212,36 @@ class NewSettingsViewController:  UIViewController, UITableViewDataSource, UITab
     }
     
     func tappedShare() {
-    
-         guard let url = URL(string: "https://apps.apple.com/gb/app/daily-quran-bulid-a-habit/id1516253962") else {
-         return
-         }
-         
-         let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        
+        guard let url = URL(string: "https://apps.apple.com/gb/app/daily-quran-bulid-a-habit/id1516253962") else {
+            return
+        }
+        
+        let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         
         if UIDevice.current.userInterfaceIdiom == .pad {
-                    activityViewController.popoverPresentationController?.sourceView = self.view
-                    activityViewController.popoverPresentationController?.sourceRect = CGRect(x: profileTableView.cellForRow(at: IndexPath(row: 1, section: 1))!.frame.midX, y: (profileTableView.cellForRow(at: IndexPath(row: 2, section: 1))!.frame.maxY) + (80) + (40), width: 0, height: 0)
-                    activityViewController.popoverPresentationController?.permittedArrowDirections = [.up]
-                }
+            activityViewController.popoverPresentationController?.sourceView = self.view
+            activityViewController.popoverPresentationController?.sourceRect = CGRect(x: profileTableView.cellForRow(at: IndexPath(row: 1, section: 1))!.frame.midX, y: (profileTableView.cellForRow(at: IndexPath(row: 2, section: 1))!.frame.maxY) + (80) + (40), width: 0, height: 0)
+            activityViewController.popoverPresentationController?.permittedArrowDirections = [.up]
+        }
         
-         // present the view controller
-         self.present(activityViewController, animated: true, completion: nil)
-         
+        // present the view controller
+        self.present(activityViewController, animated: true, completion: nil)
+        
     }
     
     func tappedContact() {
-        let alert = UIAlertController(title: "Contact Me", message: "I love hearing from you! If you give me a shout on any of the platforms below I'll be quick to answer.", preferredStyle: .actionSheet)
-        alert.addAction(UIAlertAction(title: "Twitter", style: .default, handler: { (action) in
+        let alert = UIAlertController(title: "Contact Me".localiz(), message: "I love hearing from you! If you give me a shout on any of the platforms below I'll be quick to answer.".localiz(), preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Twitter".localiz(), style: .default, handler: { (action) in
             self.openTwitter()
         }))
-        alert.addAction(UIAlertAction(title: "iMessage", style: .default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: "iMessage".localiz(), style: .default, handler: { (action) in
             self.sendMessage()
         }))
-        alert.addAction(UIAlertAction(title: "Email", style: .default, handler: { (action) in
+        alert.addAction(UIAlertAction(title: "Email".localiz(), style: .default, handler: { (action) in
             self.sendEmail()
         }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Cancel".localiz(), style: .cancel, handler: nil))
         if UIDevice.current.userInterfaceIdiom == .pad {
             alert.popoverPresentationController?.sourceView = self.view
             alert.popoverPresentationController?.sourceRect = CGRect(x: profileTableView.cellForRow(at: IndexPath(row: 1, section: 1))!.frame.midX, y: (profileTableView.cellForRow(at: IndexPath(row: 1, section: 1))!.frame.maxY) + (80) + (40), width: 0, height: 0)
@@ -320,21 +312,21 @@ extension SettingsItem {
     var title: String {
         switch self {
         case .notifications:
-            return "Notifications"
+            return "Notifications".localiz()
         case .terms:
-            return "Your Privacy"
+            return "Your Privacy".localiz()
         case .mission:
-            return "Our Mission"
+            return "Our Mission".localiz()
         case .contact:
-            return "Get in Touch"
+            return "Get in Touch".localiz()
         case .share:
-            return "Share Daily Quran"
+            return "Share Daily Quran".localiz()
         case .restart:
-            return "Reset App"
+            return "Reset App".localiz()
         case .changeDailyPages:
-            return "Change Daily Pages"
+            return "Change Daily Pages".localiz()
         case .specialChapters:
-            return "Special Chapters"
+            return "Special Chapters".localiz()
         }
     }
     
@@ -378,20 +370,6 @@ extension SettingsItem {
         case .specialChapters:
             return .systemYellow
         }
-    }
-}
-
-extension UIImage {
-    func imageWithInsets(insets: UIEdgeInsets) -> UIImage? {
-        UIGraphicsBeginImageContextWithOptions(
-            CGSize(width: self.size.width + insets.left + insets.right,
-                   height: self.size.height + insets.top + insets.bottom), false, self.scale)
-        let _ = UIGraphicsGetCurrentContext()
-        let origin = CGPoint(x: insets.left, y: insets.top)
-        self.draw(at: origin)
-        let imageWithInsets = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return imageWithInsets
     }
 }
 

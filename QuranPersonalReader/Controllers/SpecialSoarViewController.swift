@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import LanguageManager_iOS
 
 class SpecialSoarViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -68,12 +69,18 @@ class SpecialSoarViewController: UIViewController, UITableViewDataSource, UITabl
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        sections.append(("Special Chapters", [.Kahf, .lastPage, .Mulk, .Waqiah, .Yasin]))
+        sections.append(("Special Chapters".localiz(), [.Kahf, .lastPage, .Mulk, .Waqiah, .Yasin]))
         
         specialSoarTable.dataSource = self
         specialSoarTable.delegate = self
         specialSoarTable.reloadData()
         specialSoarTable.tableFooterView = UIView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.backItem?.title = ""
+        navigationController?.navigationBar.topItem?.title = "Settings".localiz()
+        navigationController?.navigationBar.prefersLargeTitles = false
     }
     
     func tappedYasin() {
@@ -122,17 +129,17 @@ extension SpecialSoarItems {
     var title:String {
         switch self {
         case .Yasin:
-            return "Yasin"
+            return "Yasin".localiz()
         case .Mulk:
-            return "Mulk"
+            return "Al-Mulk".localiz()
         case .Kahf:
-            return "Kahf"
+            return "Al-Kahf".localiz()
 //        case .AyatKursi:
 //            return "Ayat Al Kursi"
         case .Waqiah:
-            return "Waqiah"
+            return "Al-Waqiah".localiz()
         case .lastPage:
-            return "Last Page"
+            return "Last Page".localiz()
         }
     }
     

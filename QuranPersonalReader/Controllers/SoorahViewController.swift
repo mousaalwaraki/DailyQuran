@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import LanguageManager_iOS
 
 class SoorahViewController: UIViewController, AVAudioPlayerDelegate {
 
@@ -28,8 +29,6 @@ class SoorahViewController: UIViewController, AVAudioPlayerDelegate {
     
     override func viewDidLoad() {
         produceArray()
-        self.title = "Settings"
-        self.navigationItem.title = "\(startPage!)"
         navigationController?.navigationBar.prefersLargeTitles = false
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "play.fill"), style: .done, target: self, action: #selector(playPauseTapped))
         numberOfPages = specialSooraChoice?.numberOfPages
@@ -42,6 +41,14 @@ class SoorahViewController: UIViewController, AVAudioPlayerDelegate {
             superTop.isActive = false
             view.backgroundColor = .white
         }
+        
+        if LanguageManager.shared.currentLanguage == .ar {
+            navigationController?.navigationBar.topItem?.title = "عودة"
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.topItem?.title = ""
     }
     
     @objc func playPauseTapped() {
