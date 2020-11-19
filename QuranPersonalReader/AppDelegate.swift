@@ -17,10 +17,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         LocalNotificationManager.shared.scheduleNotifications()
         LanguageManager.shared.defaultLanguage = .deviceLanguage
-        if LanguageManager.shared.defaultLanguage == .ar || LanguageManager.shared.defaultLanguage == .en {
-            
-        } else {
+        if LanguageManager.shared.defaultLanguage == .ar || LanguageManager.shared.defaultLanguage == .en {} else {
             LanguageManager.shared.defaultLanguage = .en
+        }
+        CoreDataManager().load { (returnedData: [NSManagedObject]) in
+            if returnedData.count > 0 {
+                UserDefaults.standard.setValue(returnedData[0].value(forKey: "currentStreak"), forKey: "CurrentStreak")
+                UserDefaults.standard.setValue(returnedData[0].value(forKey: "maxStreak"), forKey: "MaxStreak")
+                UserDefaults.standard.setValue(returnedData[0].value(forKey: "lastDate"), forKey: "lastDate")
+                UserDefaults.standard.setValue(returnedData[0].value(forKey: "todaysDate"), forKey: "todaysDate")
+                UserDefaults.standard.setValue(returnedData[0].value(forKey: "dailyPages"), forKey: "dailyPages")
+                UserDefaults.standard.setValue(returnedData[0].value(forKey: "pagesRead"), forKey: "pagesRead")
+                UserDefaults.standard.setValue(returnedData[0].value(forKey: "currentPage"), forKey: "currentPage")
+                UserDefaults.standard.setValue(returnedData[0].value(forKey: "readToday"), forKey: "readToday")
+            }
         }
         return true
     }
@@ -76,6 +86,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return container
     }()
 
+    static var persistentContainer: NSPersistentContainer {
+    return (UIApplication.shared.delegate as! AppDelegate).persistentContainer
+    }
+    
+    static var viewContext: NSManagedObjectContext {
+        let viewContext = persistentContainer.viewContext
+        viewContext.automaticallyMergesChangesFromParent = true
+        return viewContext
+    }
     // MARK: - Core Data Saving support
 
     func saveContext () {

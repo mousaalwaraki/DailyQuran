@@ -30,6 +30,8 @@
 		412BD1F724E420E900D74602 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 412BD1F924E420E900D74602 /* Localizable.strings */; };
 		4193759E248E6A5B00388D7A /* CompletedQuranViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4193759D248E6A5B00388D7A /* CompletedQuranViewController.swift */; };
 		419375A0248E73F800388D7A /* DuaaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4193759F248E73F800388D7A /* DuaaViewController.swift */; };
+		41A201542550C3A800A5C36B /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41A201532550C3A800A5C36B /* CoreDataManager.swift */; };
+		41A201592550D89700A5C36B /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41A201582550D89700A5C36B /* CloudKit.framework */; };
 		41DABDC124A8FAE800261430 /* EmptyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41DABDC024A8FAE800261430 /* EmptyViewController.swift */; };
 		41FD4D4924867BF800C84FA6 /* SpecialSoarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FD4D4824867BF800C84FA6 /* SpecialSoarViewController.swift */; };
 		41FD4D4B24869B4A00C84FA6 /* StreakTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41FD4D4A24869B4A00C84FA6 /* StreakTableViewCell.swift */; };
@@ -66,6 +68,9 @@
 		412BD1FA24E4214600D74602 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = ar.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4193759D248E6A5B00388D7A /* CompletedQuranViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedQuranViewController.swift; sourceTree = "<group>"; };
 		4193759F248E73F800388D7A /* DuaaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuaaViewController.swift; sourceTree = "<group>"; };
+		41A201532550C3A800A5C36B /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		41A201562550D88300A5C36B /* Daily Quran.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Daily Quran.entitlements"; sourceTree = "<group>"; };
+		41A201582550D89700A5C36B /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		41DABDC024A8FAE800261430 /* EmptyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyViewController.swift; sourceTree = "<group>"; };
 		41FD4D4824867BF800C84FA6 /* SpecialSoarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpecialSoarViewController.swift; sourceTree = "<group>"; };
 		41FD4D4A24869B4A00C84FA6 /* StreakTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakTableViewCell.swift; sourceTree = "<group>"; };
@@ -83,6 +88,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBAF16D3807301169B4500CE /* Pods_QuranPersonalReader.framework in Frameworks */,
+				41A201592550D89700A5C36B /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +125,7 @@
 		411125E9247FF4D4003F4AA6 /* QuranPersonalReader */ = {
 			isa = PBXGroup;
 			children = (
+				41A201562550D88300A5C36B /* Daily Quran.entitlements */,
 				411125EA247FF4D4003F4AA6 /* AppDelegate.swift */,
 				411125EC247FF4D4003F4AA6 /* SceneDelegate.swift */,
 				416CE03B248303A700F9C465 /* Helpers */,
@@ -153,6 +160,7 @@
 				41185DAD2481488E0018EEF7 /* Utilities.swift */,
 				41185DAA24813CBF0018EEF7 /* LocalNotification.swift */,
 				41185DA924813CBF0018EEF7 /* LocalNotificationManager.swift */,
+				41A201532550C3A800A5C36B /* CoreDataManager.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -188,6 +196,7 @@
 		D54A6246BF69868691FAE178 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				41A201582550D89700A5C36B /* CloudKit.framework */,
 				889EC6708FD142AC7E2386A4 /* Pods_QuranPersonalReader.framework */,
 			);
 			name = Frameworks;
@@ -318,6 +327,7 @@
 				419375A0248E73F800388D7A /* DuaaViewController.swift in Sources */,
 				41112602247FF514003F4AA6 /* FirstLaunchViewController.swift in Sources */,
 				411125EB247FF4D4003F4AA6 /* AppDelegate.swift in Sources */,
+				41A201542550C3A800A5C36B /* CoreDataManager.swift in Sources */,
 				41185DB7248151090018EEF7 /* NotificationsViewController.swift in Sources */,
 				41FD4D4924867BF800C84FA6 /* SpecialSoarViewController.swift in Sources */,
 				41FD4D4B24869B4A00C84FA6 /* StreakTableViewCell.swift in Sources */,
@@ -490,6 +500,7 @@
 			baseConfigurationReference = DE1D22B81986618554DA2E1A /* Pods-QuranPersonalReader.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "QuranPersonalReader/Daily Quran.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 6K8BWF3CZ2;
@@ -511,6 +522,7 @@
 			baseConfigurationReference = D6A1D0152895995462C9D0A0 /* Pods-QuranPersonalReader.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "QuranPersonalReader/Daily Quran.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 6K8BWF3CZ2;

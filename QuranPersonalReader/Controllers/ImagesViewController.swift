@@ -177,6 +177,7 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
         UserDefaults.standard.set(components, forKey: "todaysDate")
         UserDefaults.standard.set("\(combinedCurrentDate)", forKey: "lastDate")
         UserDefaults.standard.set("true", forKey: "readToday")
+        CoreDataManager().save()
     }
     
     func relaunchVC() {
@@ -200,6 +201,7 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
         if UserDefaults.standard.value(forKey: "MaxStreak") == nil  || (UserDefaults.standard.value(forKey: "CurrentStreak") as! Int > UserDefaults.standard.value(forKey: "MaxStreak") as! Int) {
             UserDefaults.standard.set(UserDefaults.standard.value(forKey: "CurrentStreak") as! Int, forKey: "MaxStreak")
         }
+        CoreDataManager().save()
     }
     
     func pauseAudio() {
@@ -327,6 +329,7 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
         produceArray()
         completedPages = UserDefaults.standard.integer(forKey: "pagesRead")
         UserDefaults.standard.set(completedPages + dailyPages, forKey: "pagesRead")
+        CoreDataManager().save()
     }
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
