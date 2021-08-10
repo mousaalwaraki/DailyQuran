@@ -8,19 +8,17 @@
 
 import UIKit
 import AVFoundation
+import MediaPlayer
 
 class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
     
-    @IBOutlet weak var bottomContentSafeAreaConstraint: NSLayoutConstraint!
-    @IBOutlet var bottomContentSuperViewConstraint: NSLayoutConstraint!
-    @IBOutlet weak var centreConstraint: NSLayoutConstraint!
+    @IBOutlet weak var superTop: NSLayoutConstraint!
+    @IBOutlet weak var safeTop: NSLayoutConstraint!
     @IBOutlet var bgView: UIView!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var doneButton: UIButton!
     @IBOutlet weak var titleBar: UINavigationItem!
-    @IBOutlet weak var superTop: NSLayoutConstraint!
-    @IBOutlet weak var safeTop: NSLayoutConstraint!
     @IBOutlet weak var pageNumberLabel: UILabel!
     @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
     
@@ -43,22 +41,39 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
     var currentlyFinishedAudioNumberOfPages = 0
     var currentlyFinishedNumberOfPages:Int?
     var deviceIsLandscape : Bool?
+    var duration = 0.0
+    var assets = [String]()
+    lazy var newPlayer = AVQueuePlayer()
+    var number: CGFloat?
     
     override func viewDidLoad() {
         LocalNotificationManager.shared.scheduleNotifications()
         deviceIsLandscape = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isLandscape ?? false
         NotificationCenter.default.addObserver(self, selector: #selector(setSuperConstraints(_:)), name: Notification.Name(rawValue: "FullScreen"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(setSafeConstraints(_:)), name: Notification.Name(rawValue: "Non-FullScreen"), object: nil)
+        
+        playPauseButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 20)
+        number = navigationController?.navigationBar.frame.height
+        
+        do {
+          try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
+        } catch {
+          print("Failed to set audio session category.  Error: \(error)")
+        }
     }
     
     @objc func setSuperConstraints(_ notification: Notification) {
-        bottomContentSafeAreaConstraint.isActive = false
-        bottomContentSuperViewConstraint.isActive = true
+        if traitCollection.userInterfaceStyle == .dark {
+            bgView.backgroundColor = .init(red: 0.15/1, green: 0.15/1, blue: 0.15/1, alpha: 1)
+        }
+        iPadFixConstraints()
     }
     
     @objc func setSafeConstraints(_ notification: Notification) {
-        bottomContentSafeAreaConstraint.isActive = true
-        bottomContentSuperViewConstraint.isActive = false
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            safeTop.isActive = true
+            superTop.isActive = false
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -71,7 +86,9 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
         setAudioPageArrayForiPad()
         currentlyFinishedNumberOfPages = ((UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isLandscape) ?? false) ? 2 : 1
         self.title = String(pageNumber!)
-        pageNumberLabel.text = String(pageNumber!)
+        if pageNumberLabel != nil {
+            pageNumberLabel.text = String(pageNumber!)
+        }
         tabBarController?.tabBar.items![0].title = "Today"
         contentView.backgroundColor = .white
         if self.traitCollection.userInterfaceStyle == .dark {
@@ -82,7 +99,7 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
     }
     
     override func viewDidLayoutSubviews() {
-        iPadFixConstraints()
+//        iPadFixConstraints()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,41 +115,63 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
         player?.pause()
     }
     
-    @IBAction func playPauseTapped(_ sender: Any) {
-        
-        getJuzNumber()
-        
-        if player == nil {
-            playPauseButton.frame = CGRect.init(x: 0, y: 0, width: 30, height: 20)
-            playPauseButton.setImage(UIImage(systemName: "slowmo"), for: .normal)
-        }
-        
-        guard let audioPlayer = player else {
+    func queueAudioFiles(completion: @escaping () -> ()) {
             
-            URLSession.shared.dataTask(with: URL(string: "\(Url ?? "smth")")!) { (data, response, error) in
-                //DONE DOWNLOADING
-                guard let data = data, error == nil else {
-                    //                    print("Something went wrong")
-                    self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-                    return
-                }
-                self.player = try! AVAudioPlayer(data: data, fileTypeHint: AVFileType.mp3.rawValue)
-                self.player?.prepareToPlay()
-                //                self.player?.enableRate = true
-                //                self.player?.rate = 50
-                self.player?.play()
-                self.player!.delegate = self
-                DispatchQueue.main.sync {
-                    self.playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
-                }
-            }.resume()
-            return
+        for page in 1...dailyPages {
+            fixForPageOne()
+            juzInitialNumber = (Double((juzPageNumber! - 1)) / 20).rounded(.up)
+            juzNumber = Int(juzInitialNumber)
+            let threeDigitNumber = String(format: "%03d", pagesToRead[page - 1])
+            Url = "https://www.aswaatulqurraa.com/files/Pages/Abu%20Bakr%20al%20Shatri%20(15%20Liner)/\(juzNumber)/\(threeDigitNumber).mp3"
+            let newAsset = AVAsset(url: URL(string: Url ?? "")!)
+            let newAVPlayerItem = AVPlayerItem(asset: newAsset)
+            newPlayer.insert(newAVPlayerItem, after: nil)
+            
+            let asset = AVURLAsset(url: URL(string: "\(Url ?? "")")!)
+            duration += Double(CMTimeGetSeconds(asset.duration))
+            if page == dailyPages {
+                NotificationCenter.default.addObserver(self, selector: #selector(self.playerDidFinishPlaying(sender:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: newAVPlayerItem)
+                completion()
+            }
         }
-        
-        if audioPlayer.isPlaying {
-            pauseAudio()
+    }
+    
+    @objc func playerDidFinishPlaying(sender: Notification) {
+        self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        UserDefaults.standard.set(false, forKey: "AudioPlaying")
+    }
+    
+    func runFirstTime(completion: @escaping () -> ()) {
+            queueAudioFiles() { [self] in
+                newPlayer.playImmediately(atRate: 1.0)
+                setupRemoteTransportControls()
+                setupNowPlaying()
+                UserDefaults.standard.set(true, forKey: "AudioPlaying")
+                completion()
+            }
+    }
+    
+    @IBAction func playPauseTapped(_ sender: Any) {
+
+        if newPlayer.items().count == 0 {
+            
+            runFirstTime { [self] in
+                if duration == 0.0 {
+                    playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+                    newPlayer.removeAllItems()
+                    let alert = UIAlertController(title: "Error", message: "The audio has failed to play, please check connection and try again.", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+                    present(alert, animated: true)
+                } else {
+                    playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+                }
+            }
+        } else if newPlayer.rate != 0 {
+            newPlayer.pause()
+            playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
         } else {
-            playAudio()
+            newPlayer.play()
+            playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
         }
     }
     
@@ -176,7 +215,7 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
         getTodaysDate()
         UserDefaults.standard.set(components, forKey: "todaysDate")
         UserDefaults.standard.set("\(combinedCurrentDate)", forKey: "lastDate")
-        UserDefaults.standard.set("true", forKey: "readToday")
+        UserDefaults.standard.set(true, forKey: "readToday")
         CoreDataManager().save()
     }
     
@@ -204,14 +243,52 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
         CoreDataManager().save()
     }
     
-    func pauseAudio() {
-        self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-        player?.pause()
+    func setupRemoteTransportControls() {
+        let commandCenter = MPRemoteCommandCenter.shared()
+
+        commandCenter.playCommand.addTarget { [unowned self] event in
+            if newPlayer.rate == 0.0 {
+                newPlayer.play()
+                setupNowPlaying()
+                return .success
+            }
+            return .commandFailed
+        }
+
+        commandCenter.pauseCommand.addTarget { [unowned self] event in
+            if newPlayer.rate == 1.0 {
+                newPlayer.pause()
+                setupNowPlaying()
+                return .success
+            }
+            return .commandFailed
+        }
     }
     
-    func playAudio() {
-        self.playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
-        player?.play()
+    func setupNowPlaying() {
+        var nowPlayingInfo = [String : Any]()
+        
+        if dailyPages > 1 {
+            nowPlayingInfo[MPMediaItemPropertyTitle] = "P\(pageNumber ?? 0)-\(Int(pageNumber ?? 1) + Int(dailyPages) - 1)"
+        } else {
+            nowPlayingInfo[MPMediaItemPropertyTitle] = "P\(pageNumber ?? 0)"
+        }
+
+        if let image = UIImage(named: "lockscreen") {
+            nowPlayingInfo[MPMediaItemPropertyArtwork] =
+                MPMediaItemArtwork(boundsSize: image.size) { size in
+                    return image
+            }
+        }
+        
+        nowPlayingInfo[MPMediaItemPropertyArtist] = "Daily Quran"
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = newPlayer.rate
+        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = duration
+        let currentTime = CMTimeGetSeconds(newPlayer.currentTime())
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = currentTime
+        nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackProgress] = currentTime/duration
+
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
     
     func setAudioPageArrayForiPad() {
@@ -234,8 +311,9 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
     
     func iPadFixConstraints() {
         if UIDevice.current.userInterfaceIdiom == .pad {
-            safeTop.isActive = true
-            superTop.isActive = false
+            safeTop.isActive = false
+            superTop.isActive = true
+            superTop.constant = 10.0
         }
     }
     
@@ -296,14 +374,6 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
         
     }
     
-    func getJuzNumber() {
-        fixForPageOne()
-        juzInitialNumber = (Double((juzPageNumber! - 1)) / 20).rounded(.up)
-        juzNumber = Int(juzInitialNumber)
-        let threeDigitNumber = String(format: "%03d", pagesToRead[currentlyFinishedAudioNumberOfPages])
-        Url = "https://www.aswaatulqurraa.com/files/Pages/Abu%20Bakr%20al%20Shatri%20(15%20Liner)/\(juzNumber)/\(threeDigitNumber).mp3"
-    }
-    
     func produceArray() {
         completedPages = UserDefaults.standard.integer(forKey: "pagesRead")
         for pages in 1...dailyPages{
@@ -330,19 +400,6 @@ class ImagesViewController: UIViewController, AVAudioPlayerDelegate {
         completedPages = UserDefaults.standard.integer(forKey: "pagesRead")
         UserDefaults.standard.set(completedPages + dailyPages, forKey: "pagesRead")
         CoreDataManager().save()
-    }
-    
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-        self.player = nil
-        
-        if currentlyFinishedAudioNumberOfPages < pagesToRead.count - 1 {
-            currentlyFinishedAudioNumberOfPages += 1
-            playPauseTapped(self)
-        } else {
-            self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-            self.player = nil
-        }
     }
     
     func configurePageViewController() {
@@ -504,7 +561,9 @@ extension ImagesViewController: UIPageViewControllerDelegate, UIPageViewControll
             return
         }
         
-        pageNumberLabel.text = "\(UserDefaults.standard.value(forKey: "currentPage") ?? pageNumber!)"
+        if pageNumberLabel != nil {
+            pageNumberLabel.text = "\(UserDefaults.standard.value(forKey: "currentPage") ?? pageNumber!)"
+        }
         self.title = "\(UserDefaults.standard.value(forKey: "currentPage") ?? pageNumber!)"
         tabBarController?.tabBar.items![0].title = "Today"
         

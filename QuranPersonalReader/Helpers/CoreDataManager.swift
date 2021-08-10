@@ -13,6 +13,12 @@ class CoreDataManager {
     
     func save() {
         
+        let currentDate = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.M.YYYY"
+        let calendar = Calendar.current
+        let components = "\(calendar.component(.day, from: currentDate))"
+
         deleteAll()
         let entity = NSEntityDescription.entity(forEntityName: "UserValues",
                                                 in: AppDelegate.viewContext)!
@@ -23,8 +29,8 @@ class CoreDataManager {
         userValuesEntity.setValue(UserDefaults.standard.value(forKey: "CurrentStreak"), forKey: "currentStreak")
         userValuesEntity.setValue(UserDefaults.standard.value(forKey: "MaxStreak"), forKey: "maxStreak")
         userValuesEntity.setValue(UserDefaults.standard.value(forKey: "lastDate"), forKey: "lastDate")
-        userValuesEntity.setValue(UserDefaults.standard.value(forKey: "readToday"), forKey: "readToday")
-        userValuesEntity.setValue(UserDefaults.standard.value(forKey: "todaysDate"), forKey: "todaysDate")
+        userValuesEntity.setValue(UserDefaults.standard.value(forKey: "readToday") as? Bool ?? false, forKey: "readToday")
+        userValuesEntity.setValue(components, forKey: "todaysDate")
         userValuesEntity.setValue(UserDefaults.standard.value(forKey: "dailyPages"), forKey: "dailyPages")
         userValuesEntity.setValue(UserDefaults.standard.value(forKey: "pagesRead"), forKey: "pagesRead")
         userValuesEntity.setValue(UserDefaults.standard.value(forKey: "currentPage"), forKey: "currentPage")

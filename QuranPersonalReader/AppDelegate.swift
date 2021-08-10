@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import AVFoundation
 import LanguageManager_iOS
 
 @UIApplicationMain
@@ -15,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
         LocalNotificationManager.shared.scheduleNotifications()
         LanguageManager.shared.defaultLanguage = .deviceLanguage
         if LanguageManager.shared.defaultLanguage == .ar || LanguageManager.shared.defaultLanguage == .en {} else {
@@ -34,6 +36,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         return true
     }
+    
+    func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        print("Hello 2")
+            do {
+                try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode.spokenAudio, options: [.allowAirPlay])
+                print("Playback OK")
+                try AVAudioSession.sharedInstance().setActive(true)
+                print("Session is Active")
+            } catch {
+                print(error)
+            }
+            return true
+        }
     
     func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         var smth:UIInterfaceOrientationMask = .portrait

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -39,6 +40,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        getTodaysDate()
         
         // Check if first launch
         if UserDefaults.standard.integer(forKey: "dailyPages") != 0 {
@@ -76,13 +79,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         getTodaysDate()
         
         // Check if already read today
-        if UserDefaults.standard.integer(forKey: "todaysDate") == components {
+        if UserDefaults.standard.integer(forKey: "todaysDate") == components && UserDefaults.standard.value(forKey: "AudioPlaying") as? Bool != true {
             let vc = storyboard.instantiateViewController(identifier: "DoneReadingViewController")
             window!.rootViewController =  vc
         } else if UserDefaults.standard.integer(forKey: "todaysDate") == 1000 {
             let vc = storyboard.instantiateViewController(identifier: "DuaaViewController")
             window!.rootViewController =  vc
         }
+        
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

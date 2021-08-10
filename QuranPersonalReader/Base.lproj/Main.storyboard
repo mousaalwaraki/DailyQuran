@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8K6-d5-g2H">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="8K6-d5-g2H">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -198,7 +198,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="x71-l8-VO3">
-                                <rect key="frame" x="0.0" y="44" width="375" height="574"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="579"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                             </view>
@@ -210,35 +210,19 @@
                             </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="RIS-ei-hpC"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" systemColor="labelColor"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="x71-l8-VO3" secondAttribute="bottom" id="3gC-oZ-UAJ"/>
                             <constraint firstItem="x71-l8-VO3" firstAttribute="leading" secondItem="RIS-ei-hpC" secondAttribute="leading" id="BCq-Av-PIk"/>
-                            <constraint firstItem="x71-l8-VO3" firstAttribute="top" secondItem="mqX-vy-eUu" secondAttribute="top" id="FUJ-Hr-6mW"/>
                             <constraint firstItem="x71-l8-VO3" firstAttribute="trailing" secondItem="RIS-ei-hpC" secondAttribute="trailing" id="OYb-u4-oOv"/>
                             <constraint firstItem="G6g-2Z-UyE" firstAttribute="centerX" secondItem="mqX-vy-eUu" secondAttribute="centerX" id="PUa-Eg-wYB"/>
-                            <constraint firstItem="x71-l8-VO3" firstAttribute="top" secondItem="RIS-ei-hpC" secondAttribute="top" id="Tv2-Ia-jQj">
-                                <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
-                            </constraint>
+                            <constraint firstItem="x71-l8-VO3" firstAttribute="centerY" secondItem="mqX-vy-eUu" secondAttribute="centerY" id="bWh-Lg-h9t"/>
+                            <constraint firstItem="x71-l8-VO3" firstAttribute="top" secondItem="mqX-vy-eUu" secondAttribute="top" id="rbI-hu-etn"/>
                             <constraint firstAttribute="bottom" secondItem="G6g-2Z-UyE" secondAttribute="bottom" constant="20" id="sws-bx-Dlb"/>
-                            <constraint firstItem="x71-l8-VO3" firstAttribute="centerY" secondItem="mqX-vy-eUu" secondAttribute="centerY" id="whW-dx-AdX"/>
-                            <constraint firstItem="RIS-ei-hpC" firstAttribute="bottom" secondItem="x71-l8-VO3" secondAttribute="bottom" id="zYF-Wb-Ohf"/>
+                            <constraint firstItem="x71-l8-VO3" firstAttribute="top" secondItem="RIS-ei-hpC" secondAttribute="top" id="ytO-yd-bjI"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="3gC-oZ-UAJ"/>
-                                <exclude reference="whW-dx-AdX"/>
-                            </mask>
-                        </variation>
-                        <variation key="heightClass=regular-widthClass=compact">
-                            <mask key="constraints">
-                                <exclude reference="FUJ-Hr-6mW"/>
-                            </mask>
-                        </variation>
-                        <variation key="heightClass=regular-widthClass=regular">
-                            <mask key="constraints">
-                                <include reference="FUJ-Hr-6mW"/>
-                                <include reference="Tv2-Ia-jQj"/>
+                                <exclude reference="rbI-hu-etn"/>
                             </mask>
                         </variation>
                     </view>
@@ -267,21 +251,18 @@
                     <connections>
                         <outlet property="bgView" destination="mqX-vy-eUu" id="8Qa-PC-muV"/>
                         <outlet property="bottomConstraint" destination="sws-bx-Dlb" id="QKf-y8-jrI"/>
-                        <outlet property="bottomContentSafeAreaConstraint" destination="zYF-Wb-Ohf" id="2Rr-UJ-RPo"/>
-                        <outlet property="bottomContentSuperViewConstraint" destination="3gC-oZ-UAJ" id="XpC-u0-5TI"/>
-                        <outlet property="centreConstraint" destination="whW-dx-AdX" id="80o-vx-TtS"/>
                         <outlet property="contentView" destination="x71-l8-VO3" id="Qxv-Zl-Deo"/>
                         <outlet property="doneButton" destination="QJQ-iN-Mp0" id="fDo-ZO-jYd"/>
                         <outlet property="pageNumberLabel" destination="G6g-2Z-UyE" id="0Aa-a3-MmL"/>
                         <outlet property="playPauseButton" destination="ZFM-DC-UGs" id="eTa-jS-RWR"/>
-                        <outlet property="safeTop" destination="Tv2-Ia-jQj" id="RTQ-KN-rAj"/>
-                        <outlet property="superTop" destination="FUJ-Hr-6mW" id="hOq-ss-hF9"/>
+                        <outlet property="safeTop" destination="ytO-yd-bjI" id="4NZ-vS-Rht"/>
+                        <outlet property="superTop" destination="rbI-hu-etn" id="AKm-ro-w7W"/>
                         <outlet property="titleBar" destination="KOV-XO-GgQ" id="Ud3-Tp-1kz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SdE-3g-2j2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-65.217391304347828" y="1567.6339285714284"/>
+            <point key="canvasLocation" x="-66.400000000000006" y="1567.4662668665669"/>
         </scene>
         <!--Settings-->
         <scene sceneID="4PN-5H-wC2">
@@ -610,6 +591,7 @@
                     <connections>
                         <outlet property="bgView" destination="HMz-xf-Uld" id="NK3-jL-Q8K"/>
                         <outlet property="quranImage" destination="FTA-3s-JBZ" id="Yux-VQ-6MQ"/>
+                        <outlet property="tapGesture" destination="zDl-m8-SyC" id="A6R-4q-494"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="JxC-Kx-D1V" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

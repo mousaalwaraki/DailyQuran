@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import MediaPlayer
 import LanguageManager_iOS
 
 class SoorahViewController: UIViewController, AVAudioPlayerDelegate {
@@ -26,6 +27,7 @@ class SoorahViewController: UIViewController, AVAudioPlayerDelegate {
     var playPauseButton: UIButton = UIButton(type: .system)
     var myURL = ""
     var juzPageNumber = 0
+    lazy var newPlayer = AVQueuePlayer()
     
     override func viewDidLoad() {
         produceArray()
@@ -33,6 +35,12 @@ class SoorahViewController: UIViewController, AVAudioPlayerDelegate {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "play.fill"), style: .done, target: self, action: #selector(playPauseTapped))
         numberOfPages = specialSooraChoice?.numberOfPages
         startPage = specialSooraChoice?.pageNumber
+        
+        do {
+          try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
+        } catch {
+          print("Failed to set audio session category.  Error: \(error)")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

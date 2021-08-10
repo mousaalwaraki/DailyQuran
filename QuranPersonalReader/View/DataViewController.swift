@@ -12,8 +12,9 @@ class DataViewController: UIViewController {
 
     @IBOutlet var bgView: UIView!
     @IBOutlet weak var quranImage: UIImageView!
+    @IBOutlet var tapGesture: UITapGestureRecognizer!
     
-    var fullScreen = false
+    var fullScreen = UserDefaults.standard.value(forKey: "FullScreen") as? Bool ?? false
     var index: Int?
     var quranPage: Int = 0
     
@@ -38,13 +39,6 @@ class DataViewController: UIViewController {
             quranImage.image = quranImage.image
         }
     }
-    override func viewDidAppear(_ animated: Bool) {
-        if fullScreen {
-            hideNavAndTab()
-        } else {
-            showNavAndTab()
-        }
-    }
     
     override func viewDidLoad() {
         UserDefaults.standard.set(quranPage, forKey: "currentPage")
@@ -61,19 +55,23 @@ class DataViewController: UIViewController {
     }
     
     func hideNavAndTab() {
-        UIView.animate(withDuration: 0.3) {
-            self.navigationController?.setNavigationBarHidden(true, animated: true)
-            self.tabBarController?.tabBar.alpha = 0
-            self.setNeedsStatusBarAppearanceUpdate()
+        UIView.animate(withDuration: 0.3) { [self] in
+            fullScreen = true
+            UserDefaults.standard.set(fullScreen, forKey: "FullScreen")
+            navigationController?.navigationBar.alpha = 0
+            tabBarController?.tabBar.alpha = 0
+            setNeedsStatusBarAppearanceUpdate()
         }
         NotificationCenter.default.post(name: Notification.Name(rawValue: "FullScreen"), object: nil)
     }
     
     func showNavAndTab() {
-        UIView.animate(withDuration: 0.3) {
-            self.navigationController?.setNavigationBarHidden(false, animated: true)
-            self.tabBarController?.tabBar.alpha = 1
-            self.setNeedsStatusBarAppearanceUpdate()
+        UIView.animate(withDuration: 0.3) { [self] in
+            fullScreen = false
+            UserDefaults.standard.set(fullScreen, forKey: "FullScreen")
+            navigationController?.navigationBar.alpha = 1
+            tabBarController?.tabBar.alpha = 1
+            setNeedsStatusBarAppearanceUpdate()
         }
         NotificationCenter.default.post(name: Notification.Name(rawValue: "Non-FullScreen"), object: nil)
     }
